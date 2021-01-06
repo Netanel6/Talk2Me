@@ -1,4 +1,4 @@
-package com.netanel.talk2me;
+package com.netanel.talk2me.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.netanel.talk2me.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
