@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupTabLayouts();
-        isAppInstalled();
     }
 
 
@@ -42,23 +41,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static void toast(Context context, String content) {
-        Toast.makeText(context, content, Toast.LENGTH_SHORT).show();
-    }
 
-    private void isAppInstalled() {
-        PackageManager pm = getPackageManager();
-        boolean installed;
-        try {
-            pm.getPackageInfo("com.netanel.talk2me", PackageManager.GET_ACTIVITIES);
-            installed = true;
-        } catch (PackageManager.NameNotFoundException e) {
-            installed = false;
-        }
-        if (installed) {
-            toast(this, "App installed");
-        } else {
-            toast(this, "App not installed");
-        }
-    }
+
 }

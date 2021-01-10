@@ -111,7 +111,7 @@ public class AuthActivity extends AppCompatActivity {
                                     .replace(R.id.auth_container, new LoginFragment())
                                     .commit();
                             bottomNav.setSelectedItemId(R.id.nav_login);
-                            Toast.makeText(AuthActivity.this, "Signup finished!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AuthActivity.this, "Please enter more info!", Toast.LENGTH_SHORT).show();
 
 
                         } else {

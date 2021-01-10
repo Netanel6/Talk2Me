@@ -2,6 +2,7 @@
     <string name="app_name">Talk2Me</string>
     <string name="tab_chats">Chats</string>
     <string name="tab_contacts">Contacts</string>
+    <string name="welcome_title">Congratulations you are signed up to Talk2Me</string>
 
 
 </resources>
