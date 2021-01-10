@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1075437563171",
+    "project_id": "talk2me-9e7c2",
+    "storage_bucket": "talk2me-9e7c2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075437563171:android:bea60dd4a13f21e3e83096",
+        "android_client_info": {
+          "package_name": "com.netanel.talk2me"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075437563171-e96vrrc6tk3b09nsqtt8nou8evrfj3re.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.netanel.talk2me",
+            "certificate_hash": "3fb3fd5ac968c196386f32531f7826d461590056"
+          }
+        },
+        {
+          "client_id": "1075437563171-8oo2s6oap5h64a7euurlqkbejjhukbuf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjvqrvVUW8qZajJMlndIBOMOmszNWQGHM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075437563171-8oo2s6oap5h64a7euurlqkbejjhukbuf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

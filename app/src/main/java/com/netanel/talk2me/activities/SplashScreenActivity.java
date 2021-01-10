@@ -13,16 +13,21 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.FirebaseApp;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.netanel.talk2me.MainActivity;
+import com.netanel.talk2me.auth.AuthActivity;
+import com.netanel.talk2me.main.MainActivity;
 import com.netanel.talk2me.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
+    GoogleSignInAccount signInAccount;
     ImageView splashScreenIv;
     TextView splashScreenTv;
 
@@ -30,6 +35,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        FirebaseApp.initializeApp(this);
+        signInAccount = GoogleSignIn.getLastSignedInAccount(this);
         setupViews();
         getUserPermission();
     }
@@ -75,16 +82,17 @@ public class SplashScreenActivity extends AppCompatActivity {
             splashScreenIv.startAnimation(aniFadeOut);
             splashScreenTv.startAnimation(aniFadeOut);
             handler.postDelayed(() -> {
-                splashScreenIv.setVisibility(View.INVISIBLE);
-                splashScreenTv.setVisibility(View.INVISIBLE);
-                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                if (signInAccount != null){
+                    startActivity(new Intent(this , MainActivity.class));
+                }else {
+                   startActivity(new Intent(this, AuthActivity.class));
+                }
                 finish();
-            }, 1970);
+            }, 2100);
+            splashScreenIv.setVisibility(View.INVISIBLE);
+            splashScreenTv.setVisibility(View.INVISIBLE);
         }, 2000);
     }
 
-    private void getContacts() {
-        startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
-        finish();
-    }
+
 }

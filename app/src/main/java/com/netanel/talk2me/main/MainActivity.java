@@ -1,4 +1,4 @@
-package com.netanel.talk2me;
+package com.netanel.talk2me.main;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-import com.netanel.talk2me.ui.main.SectionsPagerAdapter;
+import com.netanel.talk2me.R;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.netanel.talk2me.ui.main;
+package com.netanel.talk2me.main;
 
 import android.content.Context;
 
@@ -9,15 +9,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.netanel.talk2me.R;
-import com.netanel.talk2me.auth.LoginFragment;
-import com.netanel.talk2me.auth.SignupFragment;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * A [FragmentPagerAdapter] that returns a fragment corresponding to
- * one of the sections/tabs/pages.
- */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
@@ -35,10 +29,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new SignupFragment();
+                fragment = new ChatsFragment();
                 break;
             case 1:
-                fragment = new LoginFragment();
+                fragment = new ContactsFragment();
                 break;
         }
         return  fragment;
@@ -52,7 +46,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 2 total pages.
         return 2;
     }
 }
