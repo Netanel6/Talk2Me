@@ -62,7 +62,10 @@ public class LoginFragment extends Fragment {
         setupViews(view);
     }
 
+    private void setupRef() {
+        signInAccount = GoogleSignIn.getLastSignedInAccount(getActivity());
 
+    }
     private void setupViews(View view) {
 
         ivPhoto = view.findViewById(R.id.iv_photo);
@@ -81,10 +84,7 @@ public class LoginFragment extends Fragment {
         saveUserToDatabase();
     }
 
-    private void setupRef() {
-        signInAccount = GoogleSignIn.getLastSignedInAccount(getActivity());
 
-    }
 
 
 
@@ -103,10 +103,11 @@ public class LoginFragment extends Fragment {
         String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         isAppInstalled();
         etPhone.setError("Enter your phone number");
+        String status = "Hey there! I'm on Talk2Me";
 
         btnLogin.setOnClickListener(view -> {
             String phoneStr = etPhone.getText().toString().trim();
-            user = new User(id, nameStr, lastStr, photoUrl, emailStr, phoneStr, installed);
+            user = new User(id, nameStr, lastStr, photoUrl, emailStr, phoneStr, status, installed);
             usersRef.add(user);
 
             Snackbar snackbar = Snackbar.make(view, "You are one of us now!", Snackbar.LENGTH_LONG);

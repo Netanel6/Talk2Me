@@ -7,19 +7,26 @@ public class User {
     private String photo;
     private String email;
     private String phone;
+    private String status;
     private boolean isAppInstalled;
 
     public User() {
     }
 
-    public User(String id, String name, String last, String photo, String email, String phone, boolean isAppInstalled) {
+    public User(String id, String name, String last, String photo, String email, String phone, String status, boolean isAppInstalled) {
         this.id = id;
         this.name = name;
         this.last = last;
         this.photo = photo;
         this.email = email;
         this.phone = phone;
+        this.status = status;
         this.isAppInstalled = isAppInstalled;
+    }
+
+    public User(String name, String phone) {
+        this.name = name;
+        this.phone = phone;
     }
 
     public String getId() {
@@ -68,6 +75,14 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public boolean isAppInstalled() {

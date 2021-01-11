@@ -13,6 +13,7 @@
         android:theme="@style/Theme.Talk2Me">
         <activity
             android:name=".activities.SplashScreenActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,11 +23,16 @@
         </activity>
         <activity
             android:name=".main.MainActivity"
-            android:theme="@style/Theme.Talk2Me.NoActionBar"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".auth.AuthActivity"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Talk2Me.NoActionBar" />
+        <activity
+            android:name=".auth.AuthActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
+            android:name=".main.fab.PhonebookActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
     </application>
 
 </manifest>
