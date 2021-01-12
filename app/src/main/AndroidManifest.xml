@@ -28,11 +28,20 @@
         <activity
             android:name=".auth.AuthActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:theme="@style/Theme.Talk2Me.NoActionBar" />
         <activity
             android:name=".main.fab.PhonebookActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:theme="@style/Theme.Talk2Me.NoActionBar" />
+        <activity
+            android:name=".main.main_photo.ProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Talk2Me.NoActionBar" />
+        <activity
+            android:name=".conversation.ConversationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Talk2Me.NoActionBar" />
+
     </application>
 
 </manifest>

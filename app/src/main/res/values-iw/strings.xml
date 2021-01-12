@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Talk2Me</string>
+    <string name="tab_chats">צ\'אטים</string>
+    <string name="tab_contacts">אנשי קשר</string>
+    <string name="welcome_title">Talk2Me מזל טוב! נרשמת ל</string>
+    <string name="send">שלח</string>
+</resources>

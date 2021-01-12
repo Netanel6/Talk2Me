@@ -1,13 +1,9 @@
 package com.netanel.talk2me.main;
 
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -18,10 +14,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.netanel.talk2me.R;
 import com.netanel.talk2me.main.fab.PhonebookActivity;
-import com.netanel.talk2me.pojo.User;
+import com.netanel.talk2me.main.main_photo.ProfileActivity;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     GoogleSignInAccount signInAccount;
@@ -32,10 +26,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupTabLayouts();
 
+        setupTabLayouts();
         setupRef();
         setupViews();
+
+        setupOnPhotoClick();
     }
 
 
@@ -45,12 +41,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-         fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this , PhonebookActivity.class));
+                startActivity(new Intent(MainActivity.this, PhonebookActivity.class));
                 /*
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -71,12 +67,18 @@ public class MainActivity extends AppCompatActivity {
         Picasso.get().load(signInAccount.getPhotoUrl()).into(mainPhoto);
     }
 
+    private void setupOnPhotoClick() {
+        mainPhoto.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+        });
+    }
+
     @Override
     public void onBackPressed() {
 
     }
 
-    private ArrayList<User> getContacts() {
+  /*  private ArrayList<User> getContacts() {
         Toast.makeText(this, "getContacts", Toast.LENGTH_SHORT).show();
         ArrayList<User> list = new ArrayList<>();
         //we will find the contacts here
@@ -102,5 +104,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return list;
-    }
+    }*/
 }
