@@ -16,6 +16,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
 import static android.content.ContentValues.TAG;
 
 public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.ViewHolder> {
@@ -38,7 +40,11 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
         User user = userArrayList.get(position);
         holder.name.setText(user.getName() + " " + user.getLast());
         holder.status.setText(user.getStatus());
-        Picasso.get().load(user.getPhoto()).into(holder.photo);
+        Picasso
+                .get()
+                .load(user.getPhoto())
+                .transform(new CropCircleTransformation())
+                .into(holder.photo);
 
         holder.itemView.setOnClickListener(view -> {
             if (onItemClick != null && position != RecyclerView.NO_POSITION) {

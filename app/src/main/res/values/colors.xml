@@ -6,6 +6,7 @@
     <color name="purple_600">#4301A1</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="purple_app_name">#C42FFB</color>
+    <color name="holo_purple">@android:color/holo_purple</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>

@@ -5,7 +5,7 @@
     android:layout_height="65dp"
     android:elevation="20dp"
 
-    app:cardBackgroundColor="00000000">
+    app:cardBackgroundColor="@android:color/transparent">
 
     <LinearLayout
         android:layout_margin="6dp"

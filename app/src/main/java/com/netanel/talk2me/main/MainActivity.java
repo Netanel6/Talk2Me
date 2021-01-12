@@ -17,6 +17,8 @@ import com.netanel.talk2me.main.fab.PhonebookActivity;
 import com.netanel.talk2me.main.main_photo.ProfileActivity;
 import com.squareup.picasso.Picasso;
 
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
 public class MainActivity extends AppCompatActivity {
     GoogleSignInAccount signInAccount;
     ImageView mainPhoto;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, PhonebookActivity.class));
+                finish();
                 /*
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -64,7 +67,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViews() {
         mainPhoto = findViewById(R.id.main_image);
-        Picasso.get().load(signInAccount.getPhotoUrl()).into(mainPhoto);
+
+        Picasso
+                .get()
+                .load(signInAccount.getPhotoUrl())
+                .transform(new CropCircleTransformation())
+                .into(mainPhoto);
     }
 
     private void setupOnPhotoClick() {

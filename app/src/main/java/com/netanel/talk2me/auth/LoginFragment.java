@@ -28,6 +28,8 @@ import com.netanel.talk2me.main.MainActivity;
 import com.netanel.talk2me.pojo.User;
 import com.squareup.picasso.Picasso;
 
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
 public class LoginFragment extends Fragment {
 
     GoogleSignInAccount signInAccount;
@@ -70,7 +72,11 @@ public class LoginFragment extends Fragment {
 
         ivPhoto = view.findViewById(R.id.iv_photo);
         photoUrl = signInAccount.getPhotoUrl().toString();
-        Picasso.get().load(photoUrl).into(ivPhoto);
+        Picasso
+                .get()
+                .load(photoUrl)
+                .transform(new CropCircleTransformation())
+                .into(ivPhoto);
 
         etNameLast = view.findViewById(R.id.et_name_last);
         nameStr = signInAccount.getGivenName();

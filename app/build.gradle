@@ -46,6 +46,8 @@ dependencies {
     implementation 'com.karumi:dexter:6.2.2'
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+    //Round image
+    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation 'com.google.firebase:firebase-analytics'

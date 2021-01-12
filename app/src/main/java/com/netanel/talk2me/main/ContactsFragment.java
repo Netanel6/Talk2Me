@@ -1,16 +1,35 @@
 package com.netanel.talk2me.main;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.netanel.talk2me.R;
+import com.netanel.talk2me.main.fab.PhonebookAdapter;
+import com.netanel.talk2me.pojo.User;
+
+import java.util.ArrayList;
 
 public class ContactsFragment extends Fragment {
+    RecyclerView contactRv;
+    PhonebookAdapter adapter;
+    String currentUserID;
+    CollectionReference dataRef = FirebaseFirestore.getInstance().collection("Data");
+    ArrayList<User> users = new ArrayList<>();
 
     public ContactsFragment() {
     }
@@ -18,6 +37,7 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        adapter = new PhonebookAdapter();
 
     }
 
@@ -25,5 +45,45 @@ public class ContactsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_contacts, container, false);
+
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupRef();
+        setupViews(view);
+        getContacts();
+    }
+
+
+    private void setupRef() {
+        currentUserID = FirebaseAuth.getInstance().getUid();
+    }
+
+    private void setupViews(View view) {
+    contactRv = view.findViewById(R.id.contact_rv);
+    }
+
+    private void getContacts() {
+        dataRef.document("ContactList").collection(currentUserID).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                User user = snapshot.toObject(User.class);
+                users.add(user);
+                contactRv.
+                        setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+                adapter.setUserArrayList(users);
+                Log.d("usersRef", "setPhonebookRv: " + users.toString());
+                contactRv.setAdapter(adapter);
+                DividerItemDecoration itemDecoration2 = new DividerItemDecoration(contactRv.getContext(),
+                        DividerItemDecoration.VERTICAL);
+                contactRv.addItemDecoration(itemDecoration2);
+                adapter.notifyDataSetChanged();
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+
 }

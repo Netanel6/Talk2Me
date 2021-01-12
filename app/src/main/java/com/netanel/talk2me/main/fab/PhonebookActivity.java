@@ -1,14 +1,20 @@
 package com.netanel.talk2me.main.fab;
 
+import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,18 +23,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.netanel.talk2me.R;
+import com.netanel.talk2me.main.MainActivity;
 import com.netanel.talk2me.pojo.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
 public class PhonebookActivity extends AppCompatActivity {
     GoogleSignInAccount signInAccount;
     ImageView mainPhoto;
+    String currentUser ;
 
     CollectionReference usersRef;
     ArrayList<User> users = new ArrayList<>();
@@ -37,6 +50,7 @@ public class PhonebookActivity extends AppCompatActivity {
 
     private BottomSheetBehavior mBottomSheetBehavior;
 
+    CollectionReference dataRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +66,20 @@ public class PhonebookActivity extends AppCompatActivity {
 
     private void setupRef() {
         signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        currentUser = FirebaseAuth.getInstance( ).getUid();
         usersRef = FirebaseFirestore.getInstance().collection("AllUsers");
+        dataRef = FirebaseFirestore.getInstance().collection("Data");
         adapter = new PhonebookAdapter();
 
     }
 
     private void setupViews() {
         mainPhoto = findViewById(R.id.main_image);
-        Picasso.get().load(signInAccount.getPhotoUrl()).into(mainPhoto);
+        Picasso
+                .get()
+                .load(signInAccount.getPhotoUrl())
+                .transform(new CropCircleTransformation())
+                .into(mainPhoto);
         phonebookRv = findViewById(R.id.phonebook_rv);
     }
 
@@ -85,6 +105,7 @@ public class PhonebookActivity extends AppCompatActivity {
     }
 
     private void setOnItemClick() {
+        Button phonebookAddContactBtn = findViewById(R.id.phonebook_add_contact);
 
         adapter.setOnItemClick(new PhonebookAdapter.OnItemClick() {
             @Override
@@ -102,7 +123,7 @@ public class PhonebookActivity extends AppCompatActivity {
                 mBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                     @Override
                     public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                        TextView bottomSheetName, bottomSheetLast, bottomSheetEmail, bottomSheetPhone;
+                        TextView bottomSheetName, bottomSheetEmail, bottomSheetPhone;
                         ImageView bottomSheetImage;
 
                         //Initiate the views when the bottom sheet state == to expended
@@ -113,21 +134,42 @@ public class PhonebookActivity extends AppCompatActivity {
 
                             bottomSheetImage = findViewById(R.id.bottomsheet_image);
 
-                            Picasso.get().load(user.getPhoto()).fit().into(bottomSheetImage);
-                            bottomSheetName.setText(user.getName()+" "+user.getLast());
+                            Picasso.get().load(user.getPhoto()).transform(new CropCircleTransformation()).into(bottomSheetImage);
+                            bottomSheetName.setText(user.getName() + " " + user.getLast());
                             bottomSheetEmail.setText(user.getEmail());
                             bottomSheetPhone.setText(user.getPhone());
+                            phonebookAddContactBtn.setOnClickListener(view -> {
+                                addContact(user, currentUser);
 
 
+                                Snackbar snackbar = Snackbar.make(view, user.getName()+" "+user.getLast()+ " added to the list", Snackbar.LENGTH_LONG);
+                                View snackbarLayout = snackbar.getView();
+                                TextView textView = (TextView)snackbarLayout.findViewById(R.id.snackbar_text);
+                                textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_favorite_24, 0, 0, 0);
+                                snackbar.show();
+
+                            });
                         }
                     }
 
                     @Override
                     public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                     }
-                });            }
+                });
+            }
         });
+
     }
 
+    private void addContact(User user,String currentUserID) {
+        dataRef.document("ContactList").collection(currentUserID).add(user);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this , MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
