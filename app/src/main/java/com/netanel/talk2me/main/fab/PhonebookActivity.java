@@ -1,9 +1,6 @@
 package com.netanel.talk2me.main.fab;
 
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,8 +21,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.netanel.talk2me.R;
@@ -41,7 +37,7 @@ import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 public class PhonebookActivity extends AppCompatActivity {
     GoogleSignInAccount signInAccount;
     ImageView mainPhoto;
-    String currentUser ;
+    String currentUserID;
 
     CollectionReference usersRef;
     ArrayList<User> users = new ArrayList<>();
@@ -66,7 +62,7 @@ public class PhonebookActivity extends AppCompatActivity {
 
     private void setupRef() {
         signInAccount = GoogleSignIn.getLastSignedInAccount(this);
-        currentUser = FirebaseAuth.getInstance( ).getUid();
+        currentUserID = FirebaseAuth.getInstance().getUid();
         usersRef = FirebaseFirestore.getInstance().collection("AllUsers");
         dataRef = FirebaseFirestore.getInstance().collection("Data");
         adapter = new PhonebookAdapter();
@@ -138,16 +134,35 @@ public class PhonebookActivity extends AppCompatActivity {
                             bottomSheetName.setText(user.getName() + " " + user.getLast());
                             bottomSheetEmail.setText(user.getEmail());
                             bottomSheetPhone.setText(user.getPhone());
+                            String bottomSheetUserID = user.getId();
+
                             phonebookAddContactBtn.setOnClickListener(view -> {
-                                addContact(user, currentUser);
+                                dataRef.document("ContactList").collection(currentUserID).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                                    String contactUserID = " ";
+                                    for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                        User contactUser = snapshot.toObject(User.class);
+                                        assert contactUser != null;
+                                        contactUserID = contactUser.getId();
+                                    }
+                                    if (contactUserID.equals(bottomSheetUserID)) {
 
+                                        Snackbar snackbar = Snackbar.make(view, user.getName() + " " + user.getLast() + " already in the list!", Snackbar.LENGTH_LONG);
+                                        View snackbarLayout = snackbar.getView();
+                                        TextView textView = snackbarLayout.findViewById(R.id.snackbar_text);
+                                        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_error_24, 0, 0, 0);
+                                        snackbar.show();
+                                    } else {
+                                        addContact(user, currentUserID);
+                                        Snackbar snackbar = Snackbar.make(view, user.getName() + " " + user.getLast() + " added to the list", Snackbar.LENGTH_LONG);
+                                        View snackbarLayout = snackbar.getView();
+                                        TextView textView = snackbarLayout.findViewById(R.id.snackbar_text);
+                                        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_favorite_24, 0, 0, 0);
+                                        snackbar.show();
+                                    }
 
-                                Snackbar snackbar = Snackbar.make(view, user.getName()+" "+user.getLast()+ " added to the list", Snackbar.LENGTH_LONG);
-                                View snackbarLayout = snackbar.getView();
-                                TextView textView = (TextView)snackbarLayout.findViewById(R.id.snackbar_text);
-                                textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_favorite_24, 0, 0, 0);
-                                snackbar.show();
-
+                                }).addOnFailureListener(e -> {
+                                    Toast.makeText(PhonebookActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
                             });
                         }
                     }
@@ -161,14 +176,15 @@ public class PhonebookActivity extends AppCompatActivity {
 
     }
 
-    private void addContact(User user,String currentUserID) {
+    private void addContact(User user, String currentUserID) {
         dataRef.document("ContactList").collection(currentUserID).add(user);
 
     }
 
+
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this , MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }

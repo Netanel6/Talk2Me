@@ -1,5 +1,6 @@
 package com.netanel.talk2me.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +20,12 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.netanel.talk2me.R;
+import com.netanel.talk2me.conversation.ConversationActivity;
 import com.netanel.talk2me.main.fab.PhonebookAdapter;
 import com.netanel.talk2me.pojo.User;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ContactsFragment extends Fragment {
     RecyclerView contactRv;
@@ -54,6 +57,7 @@ public class ContactsFragment extends Fragment {
         setupRef();
         setupViews(view);
         getContacts();
+        setConversation();
     }
 
 
@@ -82,6 +86,20 @@ public class ContactsFragment extends Fragment {
             }
         }).addOnFailureListener(e -> {
             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void setConversation(){
+        adapter.setOnItemClick((user, position) -> {
+            Intent intent = new Intent(getActivity(), ConversationActivity.class);
+            intent.putExtra("name", user.getName());
+            intent.putExtra("last", user.getLast());
+            intent.putExtra("photo", user.getPhoto());
+            intent.putExtra("phone", user.getPhone());
+            intent.putExtra("email", user.getEmail());
+            intent.putExtra("status", user.getStatus());
+            startActivity(intent);
+            Objects.requireNonNull(getActivity()).finish();
         });
     }
 
