@@ -98,6 +98,7 @@ public class ContactsFragment extends Fragment {
             intent.putExtra("phone", user.getPhone());
             intent.putExtra("email", user.getEmail());
             intent.putExtra("status", user.getStatus());
+            intent.putExtra("id", user.getId());
             startActivity(intent);
             Objects.requireNonNull(getActivity()).finish();
         });
