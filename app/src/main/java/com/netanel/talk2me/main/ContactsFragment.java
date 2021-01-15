@@ -92,6 +92,7 @@ public class ContactsFragment extends Fragment {
     private void setConversation(){
         adapter.setOnItemClick((user, position) -> {
             Intent intent = new Intent(getActivity(), ConversationActivity.class);
+            dataRef.document("Conversation").collection(currentUserID).add(user);
             intent.putExtra("name", user.getName());
             intent.putExtra("last", user.getLast());
             intent.putExtra("photo", user.getPhoto());

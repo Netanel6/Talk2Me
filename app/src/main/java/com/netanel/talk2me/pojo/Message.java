@@ -1,22 +1,21 @@
 package com.netanel.talk2me.pojo;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Message {
-        private String input;
-        private String fromUser;
-        private String toUser;
-        private int messageType;
-        private final Date timeStamp = new Date();
+    private String input;
+    private String fromUser;
+    private String toUser;
+    private int messageType;
+    private String timeStamp;
 
     public Message() {
     }
 
-    public Message(String message, String fromUser, String toUser, int messageType) {
+    public Message(String message, String fromUser, String toUser) {
         this.input = message;
         this.fromUser = fromUser;
         this.toUser = toUser;
-        this.messageType = messageType;
     }
 
     public String getInput() {
@@ -44,6 +43,7 @@ public class Message {
     }
 
     public int getMessageType() {
+
         return messageType;
     }
 
@@ -52,8 +52,13 @@ public class Message {
         return messageType;
     }
 
-    public Date getTimeStamp() {
+    public String getTimeStamp() {
+
         return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     @Override

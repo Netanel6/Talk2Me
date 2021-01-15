@@ -13,6 +13,7 @@ import com.netanel.talk2me.R;
 import com.netanel.talk2me.pojo.Message;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ChatViewHolder> {
@@ -41,9 +42,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (messageType == 0) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_out_single_cell, parent, false);
-        } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_in_single_cell, parent, false);
+        }else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_out_single_cell, parent, false);
 
         }
         return new ChatViewHolder(view);
@@ -54,8 +55,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
         Message chatMessages = messageItemList.get(position);
 
-        long hour = chatMessages.getTimeStamp().getTime();
-        holder.txtTimestamp.setText(String.valueOf(hour));
+
+        String hour = chatMessages.getTimeStamp();
+        holder.txtTimestamp.setText(hour);
 
         holder.txtMessage.setText(chatMessages.getInput());
 
@@ -70,11 +72,10 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     @Override
     public int getItemViewType(int position) {
-        if (messageItemList.get(position).getMessageType() == 0)
-            return R.layout.message_out_single_cell;
-        else
+        if(messageItemList.get(position).getMessageType()==0)
             return R.layout.message_in_single_cell;
-
+    else
+        return R.layout.message_out_single_cell;
 
     }
 
