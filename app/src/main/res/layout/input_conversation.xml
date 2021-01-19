@@ -3,9 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="65dp"
-    android:elevation="20dp"
-
-    app:cardBackgroundColor="@android:color/transparent">
+    android:elevation="12dp"
+    app:cardBackgroundColor="@android:color/holo_purple">
 
     <LinearLayout
         android:layout_margin="6dp"
@@ -20,6 +19,8 @@
             android:layout_weight="1.95"
             android:background="@color/white"
             app:cardCornerRadius="25dp"
+            android:gravity="center"
+
             android:orientation="horizontal">
 
             <LinearLayout
@@ -50,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="4dp"
+            android:textColor="@color/white"
             android:drawableEnd="@drawable/ic_send_24"
             android:text="@string/send"
             android:textAllCaps="false" />

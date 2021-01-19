@@ -6,4 +6,8 @@
     <string name="welcome_title">Talk2Me מזל טוב! נרשמת ל</string>
     <string name="send">שלח</string>
     <string name="lorem" translatable="false">לורם איפסום דולור סיט אמט, קונסקטורר אדיפיסינג אלית קולהע צופעט</string>
+    <string name="status">Talk2Me-היי! אני ב</string>
+    <string name="name_amp_last">שם פרטי ומשפחה</string>
+    <string name="email">מייל</string>
+    <string name="phone">טלפון</string>
 </resources>

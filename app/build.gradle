@@ -55,4 +55,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    //BubbleText
+    implementation 'com.daasuu:BubbleLayout:1.2.0'
+    //RecyclerView
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
 }

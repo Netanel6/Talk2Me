@@ -1,9 +1,11 @@
 package com.netanel.talk2me.conversation;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,8 +45,11 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         View view;
         if (messageType == VIEW_TYPE_MESSAGE_RECEIVED) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_in_single_cell, parent, false);
+            view.setForegroundGravity(View.TEXT_ALIGNMENT_VIEW_START);
+
         }else{
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_out_single_cell, parent, false);
+            view.setForegroundGravity(View.TEXT_ALIGNMENT_VIEW_END);
 
         }
         return new ChatViewHolder(view);

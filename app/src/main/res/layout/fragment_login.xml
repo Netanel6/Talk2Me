@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"
-            android:hint="Name &amp; Last">
+            android:hint="@string/name_amp_last">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_name_last"
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"
-            android:hint="Email">
+            android:hint="@string/email">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_email"
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"
-            android:hint="Phone">
+            android:hint="@string/phone">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_phone"

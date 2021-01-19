@@ -6,7 +6,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="send">Send</string>
-    <string name="lorem" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="status">Hey there! I\'m on Talk2Me</string>
+    <string name="name_amp_last"><![CDATA[Name & Last]]></string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
 
 
 </resources>

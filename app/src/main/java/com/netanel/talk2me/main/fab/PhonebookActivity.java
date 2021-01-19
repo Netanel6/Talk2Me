@@ -97,7 +97,7 @@ public class PhonebookActivity extends AppCompatActivity {
             }
         }).addOnFailureListener(e -> {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+            Log.e("SetPhoneBookRv", e.getMessage());        });
     }
 
     private void setOnItemClick() {
@@ -115,7 +115,7 @@ public class PhonebookActivity extends AppCompatActivity {
                     mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
 
-                //Add callbacck to the bottom sheet
+                //Add callback to the bottom sheet
                 mBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                     @Override
                     public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -137,7 +137,7 @@ public class PhonebookActivity extends AppCompatActivity {
                             String bottomSheetUserID = user.getId();
 
                             phonebookAddContactBtn.setOnClickListener(view -> {
-                                dataRef.document("ContactList").collection(currentUserID).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                                usersRef.document(currentUserID).collection("Contacts").get().addOnSuccessListener(queryDocumentSnapshots -> {
                                     String contactUserID = " ";
                                     for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
                                         User contactUser = snapshot.toObject(User.class);
@@ -162,7 +162,7 @@ public class PhonebookActivity extends AppCompatActivity {
 
                                 }).addOnFailureListener(e -> {
                                     Toast.makeText(PhonebookActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                });
+                                    Log.e("setOnItemClickAddUser", e.getMessage());                                });
                             });
                         }
                     }
@@ -177,8 +177,7 @@ public class PhonebookActivity extends AppCompatActivity {
     }
 
     private void addContact(User user, String currentUserID) {
-        dataRef.document("ContactList").collection(currentUserID).add(user);
-
+        usersRef.document(currentUserID).collection("Contacts").document(user.getId()).set(user);
     }
 
 

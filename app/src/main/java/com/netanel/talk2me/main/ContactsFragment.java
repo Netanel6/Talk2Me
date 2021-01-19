@@ -31,7 +31,8 @@ public class ContactsFragment extends Fragment {
     RecyclerView contactRv;
     PhonebookAdapter adapter;
     String currentUserID;
-    CollectionReference dataRef = FirebaseFirestore.getInstance().collection("Data");
+    CollectionReference dataRef = FirebaseFirestore.getInstance().collection("AllUsers");
+    CollectionReference usersRef;
     ArrayList<User> users = new ArrayList<>();
 
     public ContactsFragment() {
@@ -62,15 +63,16 @@ public class ContactsFragment extends Fragment {
 
 
     private void setupRef() {
+        usersRef = FirebaseFirestore.getInstance().collection("AllUsers");
         currentUserID = FirebaseAuth.getInstance().getUid();
     }
 
     private void setupViews(View view) {
-    contactRv = view.findViewById(R.id.contact_rv);
+        contactRv = view.findViewById(R.id.contact_rv);
     }
 
     private void getContacts() {
-        dataRef.document("ContactList").collection(currentUserID).get().addOnSuccessListener(queryDocumentSnapshots -> {
+        usersRef.document(currentUserID).collection("Contacts").get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                 User user = snapshot.toObject(User.class);
                 users.add(user);
@@ -86,13 +88,14 @@ public class ContactsFragment extends Fragment {
             }
         }).addOnFailureListener(e -> {
             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("GetContacts", e.getMessage());
         });
     }
 
-    private void setConversation(){
+    private void setConversation() {
         adapter.setOnItemClick((user, position) -> {
             Intent intent = new Intent(getActivity(), ConversationActivity.class);
-            dataRef.document("Conversation").collection(currentUserID).add(user);
+//            dataRef.document("ContactList").collection(currentUserID);
             intent.putExtra("name", user.getName());
             intent.putExtra("last", user.getLast());
             intent.putExtra("photo", user.getPhoto());
