@@ -41,7 +41,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        if (messageType == 0) {
+        if (messageType == VIEW_TYPE_MESSAGE_RECEIVED) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_in_single_cell, parent, false);
         }else{
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_out_single_cell, parent, false);
@@ -72,10 +72,11 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     @Override
     public int getItemViewType(int position) {
-        if(messageItemList.get(position).getMessageType()==0)
+       /* if(messageItemList.get(position).getMessageType()==0)
             return R.layout.message_in_single_cell;
     else
-        return R.layout.message_out_single_cell;
+        return R.layout.message_out_single_cell;*/
+        return position;
 
     }
 

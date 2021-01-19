@@ -42,6 +42,7 @@ public class ChatsFragment extends Fragment {
     CollectionReference conversationListRef = FirebaseFirestore.getInstance().collection("Data");
     RecyclerView conversationListRv;
     ChatsAdapter adapter;
+
     public ChatsFragment() {
     }
 

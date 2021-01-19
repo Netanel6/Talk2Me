@@ -6,16 +6,16 @@ public class Message {
     private String input;
     private String fromUser;
     private String toUser;
-    private int messageType;
     private String timeStamp;
 
     public Message() {
     }
 
-    public Message(String message, String fromUser, String toUser) {
-        this.input = message;
+    public Message(String input, String fromUser, String toUser, String timeStamp) {
+        this.input = input;
         this.fromUser = fromUser;
         this.toUser = toUser;
+        this.timeStamp = timeStamp;
     }
 
     public String getInput() {
@@ -42,15 +42,7 @@ public class Message {
         this.toUser = toUser;
     }
 
-    public int getMessageType() {
 
-        return messageType;
-    }
-
-    public int setMessageType(int messageType) {
-        this.messageType = messageType;
-        return messageType;
-    }
 
     public String getTimeStamp() {
 
@@ -67,7 +59,6 @@ public class Message {
                 "message='" + input + '\'' +
                 ", fromUser='" + fromUser + '\'' +
                 ", toUser='" + toUser + '\'' +
-                ", messageType=" + messageType +
                 ", timeStamp=" + timeStamp +
                 '}';
     }

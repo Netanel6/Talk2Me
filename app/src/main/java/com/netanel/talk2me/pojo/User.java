@@ -1,5 +1,7 @@
 package com.netanel.talk2me.pojo;
 
+import java.util.ArrayList;
+
 public class User {
     private String id;
     private String name;
@@ -9,6 +11,8 @@ public class User {
     private String phone;
     private String status;
     private boolean isAppInstalled;
+
+    ArrayList<Integer> conversationCode = new ArrayList<>();
 
     public User() {
     }
@@ -83,6 +87,14 @@ public class User {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public ArrayList<Integer> getConversationCode() {
+        return conversationCode;
+    }
+
+    public void setConversationCode(ArrayList<Integer> conversationCode) {
+        this.conversationCode = conversationCode;
     }
 
     public boolean isAppInstalled() {

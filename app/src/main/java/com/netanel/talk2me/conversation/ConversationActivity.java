@@ -18,29 +18,32 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.netanel.talk2me.R;
 import com.netanel.talk2me.main.MainActivity;
 import com.netanel.talk2me.pojo.Message;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 public class ConversationActivity extends AppCompatActivity {
     ImageView contactPhoto;
     TextView contactName;
-    int hours,minutes;
+    String currentTime;
     String currentUser = FirebaseAuth.getInstance().getUid();
     String name, last, photo, phone, email, status, id;
-    FirebaseDatabase messagesRef;
+    FirebaseDatabase conListRtRef;
     EditText messageEt;
     Button sendMessage;
     RecyclerView conversationRv;
     ConversationAdapter conversationAdapter;
-    int type;
-
+    CollectionReference conListFsRef = FirebaseFirestore.getInstance().collection("Conversation");
     ArrayList<com.netanel.talk2me.pojo.Message> messages = new ArrayList<>();
 
     @Override
@@ -56,13 +59,13 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     private void setupTime() {
-        Calendar rightNow = Calendar.getInstance();
-        hours = rightNow.get(Calendar.HOUR_OF_DAY); // return the hour in 24 hrs format (ranging from 0-23)
-        minutes = rightNow.get(Calendar.MINUTE); // return the minutes
+        currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
     }
 
     private void setupRef() {
-        messagesRef = FirebaseDatabase.getInstance();
+        conListRtRef = FirebaseDatabase.getInstance();
+
     }
 
     private void setupViews() {
@@ -92,8 +95,10 @@ public class ConversationActivity extends AppCompatActivity {
     private void addMessage() {
         sendMessage.setOnClickListener(view -> {
             String messageInput = messageEt.getText().toString().trim().toLowerCase();
-            Message message = new Message(messageInput, currentUser, id);
-            messagesRef.getReference("messages").child(id).setValue(message);
+            setupTime();
+            Message message = new Message(messageInput, currentUser, id , currentTime);
+//            conListFsRef.document(currentUser).collection(currentTime).add(message);
+            conListRtRef.getReference("messages").child(id).setValue(message);
             messageEt.setText("");
         });
 
@@ -104,28 +109,18 @@ public class ConversationActivity extends AppCompatActivity {
 
         conversationRv.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
-        messagesRef.getReference("messages").orderByChild("toUser").equalTo(currentUser).addChildEventListener(new ChildEventListener() {
+        conListRtRef.getReference("messages").orderByChild("toUser").equalTo(currentUser).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
 
                     Message message = dataSnapshot.getValue(Message.class);
                     if (id.equals(message.getFromUser())) {
-
-                        conversationAdapter.setMessageType(1);
-
-                        String currentTime = hours + ":" + minutes;
-                        message.setTimeStamp(currentTime);
+                        conversationAdapter.setMessageType(0);
                         messages.add(message);
-
                         conversationAdapter.notifyDataSetChanged();
-
-
                     }
-
                 }
-
-
             }
 
             @Override
@@ -134,61 +129,22 @@ public class ConversationActivity extends AppCompatActivity {
 
                     Message message = dataSnapshot.getValue(Message.class);
                     if (id.equals(message.getFromUser())) {
-
-                        conversationAdapter.setMessageType(1);
-
-                        String currentTime = hours + ":" + minutes;
-                        message.setTimeStamp(currentTime);
+                        conversationAdapter.setMessageType(0);
                         messages.add(message);
-
                         conversationAdapter.notifyDataSetChanged();
-
-
                     }
-
                 }
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-
-                    Message message = dataSnapshot.getValue(Message.class);
-                    if (id.equals(message.getFromUser())) {
-
-                        conversationAdapter.setMessageType(1);
-
-                        String currentTime = hours + ":" + minutes;
-                        message.setTimeStamp(currentTime);
-                        messages.add(message);
-
-                        conversationAdapter.notifyDataSetChanged();
 
 
-                    }
-
-                }
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists()) {
 
-                    Message message = dataSnapshot.getValue(Message.class);
-                    if (id.equals(message.getFromUser())) {
-
-                        conversationAdapter.setMessageType(1);
-
-                        String currentTime = hours + ":" + minutes;
-                        message.setTimeStamp(currentTime);
-                        messages.add(message);
-
-                        conversationAdapter.notifyDataSetChanged();
-
-
-                    }
-
-                }
             }
 
             @Override
@@ -197,87 +153,41 @@ public class ConversationActivity extends AppCompatActivity {
             }
         });
 
-        messagesRef.getReference("messages").orderByChild("toUser").equalTo(id).addChildEventListener(new ChildEventListener() {
+        conListRtRef.getReference("messages").orderByChild("toUser").equalTo(id).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
-
-
                     Message message = dataSnapshot.getValue(Message.class);
                     if (currentUser.equals(message.getFromUser())) {
-                        conversationAdapter.setMessageType(0);
-                        String currentTime = hours + ":" + minutes;
-                        message.setTimeStamp(currentTime);
+                        conversationAdapter.setMessageType(1);
                         messages.add(message);
+//                        conListFsRef.document(id).collection("Messages").add(messages);
                         conversationAdapter.notifyDataSetChanged();
-
-
                     }
-
-
                 }
-
-
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
-
-
                     Message message = dataSnapshot.getValue(Message.class);
                     if (currentUser.equals(message.getFromUser())) {
-                        conversationAdapter.setMessageType(0);
-                        String currentTime = hours + ":" + minutes;
-                        message.setTimeStamp(currentTime);
+                        conversationAdapter.setMessageType(1);
                         messages.add(message);
+//                        conListFsRef.document(id).collection("Messages").add(messages);
                         conversationAdapter.notifyDataSetChanged();
-
-
                     }
-
-
                 }
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
 
-
-                    Message message = dataSnapshot.getValue(Message.class);
-                    if (currentUser.equals(message.getFromUser())) {
-                        conversationAdapter.setMessageType(0);
-                        String currentTime = hours + ":" + minutes;
-                        message.setTimeStamp(currentTime);
-                        messages.add(message);
-                        conversationAdapter.notifyDataSetChanged();
-
-
-                    }
-
-
-                }
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists()) {
 
-
-                    Message message = dataSnapshot.getValue(Message.class);
-                    if (currentUser.equals(message.getFromUser())) {
-                        conversationAdapter.setMessageType(0);
-                        String currentTime = hours + ":" + minutes;
-                        message.setTimeStamp(currentTime);
-                        messages.add(message);
-                        conversationAdapter.notifyDataSetChanged();
-
-
-                    }
-
-
-                }
             }
 
             @Override
@@ -285,6 +195,38 @@ public class ConversationActivity extends AppCompatActivity {
 
             }
         });
+
+
+       /*
+        conListFsRef.document(currentUser).collection(currentTime).orderBy("toUser").whereEqualTo("id", currentUser).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot snapshot:queryDocumentSnapshots){
+                Message message = snapshot.toObject(Message.class);
+                if (id.equals(message.getFromUser())){
+                    conversationAdapter.setMessageType(1);
+                    messages.add(message);
+                    conversationAdapter.notifyDataSetChanged();
+                }
+            }
+
+        }).addOnFailureListener(e -> {
+
+        });
+
+        conListFsRef.document(currentUser).collection(currentTime).orderBy("toUser").whereEqualTo("id", id).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot snapshot:queryDocumentSnapshots){
+                Message message = snapshot.toObject(Message.class);
+                if (currentUser.equals(message.getFromUser())){
+                    conversationAdapter.setMessageType(0);
+                    messages.add(message);
+                    conversationAdapter.notifyDataSetChanged();
+
+                }
+            }
+
+        }).addOnFailureListener(e -> {
+
+        });
+        */
 
         conversationRv.setAdapter(conversationAdapter);
 
