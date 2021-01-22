@@ -2,14 +2,11 @@ package com.netanel.talk2me.conversation;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,8 +21,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.netanel.talk2me.R;
 import com.netanel.talk2me.main.MainActivity;
 import com.netanel.talk2me.pojo.Message;
@@ -35,7 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
+import java.util.Objects;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
@@ -69,7 +64,6 @@ public class ConversationActivity extends AppCompatActivity {
         setupRef();
         setupViews();
         startConversation();
-        addMessage();
         setupMessage();
     }
 
@@ -81,7 +75,7 @@ public class ConversationActivity extends AppCompatActivity {
 
     private void setupRef() {
         usersRef = FirebaseFirestore.getInstance().collection("AllUsers");
-        dataRef  = FirebaseFirestore.getInstance().collection("Data");
+        dataRef = FirebaseFirestore.getInstance().collection("Data");
         conListRtRef = FirebaseDatabase.getInstance();
 
 
@@ -121,6 +115,7 @@ public class ConversationActivity extends AppCompatActivity {
             final int random = new Random().nextInt((max - min) + 1) + min;
             Toast.makeText(this, String.valueOf(random), Toast.LENGTH_SHORT).show();*/
             conListRtRef.getReference("messages").child(id).child(currentTimeWSec).setValue(message);
+
             messageEt.setText("");
         });
 
@@ -129,7 +124,7 @@ public class ConversationActivity extends AppCompatActivity {
     private void setupMessage() {
         conversationAdapter = new ConversationAdapter(ConversationActivity.this, messages);
 
-        conversationRv.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        conversationRv.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
         conListRtRef.getReference("messages").child(currentUserID).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -141,6 +136,8 @@ public class ConversationActivity extends AppCompatActivity {
                         conversationAdapter.setMessageType(0);
                         messages.add(message);
                         conversationAdapter.notifyDataSetChanged();
+                        ;
+
                     }
                 }
             }
@@ -153,6 +150,7 @@ public class ConversationActivity extends AppCompatActivity {
                     if (id.equals(message.getFromUser())) {
                         conversationAdapter.setMessageType(0);
                         messages.add(message);
+
                         conversationAdapter.notifyDataSetChanged();
                     }
                 }
@@ -254,7 +252,6 @@ public class ConversationActivity extends AppCompatActivity {
              Log.e("error", e.getMessage());
         });*/
 
-
         /*
         usersRef.document(currentUserID).collection("Contacts").document(id).collection("Chat")
                 .orderBy("toUser").whereEqualTo("id", currentUserID)
@@ -291,12 +288,7 @@ public class ConversationActivity extends AppCompatActivity {
         });
 */
 
-
-        /*
-*/
-
-
-       /*       dataRef.document("ContactList").collection(currentUserID).document(id).collection("Messages").orderBy("toUser").whereEqualTo("id", currentUserID).get().addOnSuccessListener(queryDocumentSnapshots -> {
+        /*       dataRef.document("ContactList").collection(currentUserID).document(id).collection("Messages").orderBy("toUser").whereEqualTo("id", currentUserID).get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot snapshot:queryDocumentSnapshots){
                 Message message = snapshot.toObject(Message.class);
                 if (id.equals(message.getFromUser())){
@@ -326,8 +318,15 @@ public class ConversationActivity extends AppCompatActivity {
         });
 
   */
-
         conversationRv.setAdapter(conversationAdapter);
+
+        conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
+            @Override
+            public void getPosition(int position) {
+                conversationRv.smoothScrollToPosition(position);
+            }
+        });
+        addMessage();
 
     }
 

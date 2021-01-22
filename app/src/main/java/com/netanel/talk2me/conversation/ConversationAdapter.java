@@ -22,7 +22,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     private static final int VIEW_TYPE_MESSAGE_SENT = 0;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 1;
-
+    public OnSend onSend;
     private List<Message> messageItemList = new ArrayList<>();
 
     private Context context;
@@ -65,7 +65,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         holder.txtTimestamp.setText(hour);
 
         holder.txtMessage.setText(chatMessages.getInput());
-
+        onSend.getPosition(position);
 
     }
 
@@ -81,6 +81,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             return R.layout.message_in_single_cell;
     else
         return R.layout.message_out_single_cell;*/
+
         return position;
 
     }
@@ -92,9 +93,16 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             super(itemView);
             txtMessage = itemView.findViewById(R.id.last_sent_message);
             txtTimestamp = itemView.findViewById(R.id.time_sent_message);
-
-
         }
     }
 
+
+    public interface OnSend {
+        void getPosition(int position);
+    }
+
+
+    public void setOnSend(OnSend onSend){
+        this.onSend = onSend;
+    }
 }
