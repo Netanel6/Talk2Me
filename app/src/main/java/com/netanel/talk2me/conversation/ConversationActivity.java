@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
@@ -44,7 +42,6 @@ public class ConversationActivity extends AppCompatActivity {
     EditText messageEt;
     Button sendMessage;
     RecyclerView conversationRv;
-    LinearLayout layoutContainer;
 
 
     FirebaseDatabase conListRtRef;
@@ -63,8 +60,10 @@ public class ConversationActivity extends AppCompatActivity {
         setupTime();
         setupRef();
         setupViews();
+        setupRecyclerView();
         startConversation();
         setupMessage();
+        addMessage();
     }
 
     private void setupTime() {
@@ -86,7 +85,7 @@ public class ConversationActivity extends AppCompatActivity {
         contactName = findViewById(R.id.title);
         messageEt = findViewById(R.id.input_et);
         sendMessage = findViewById(R.id.input_send);
-        conversationRv = findViewById(R.id.conversationRv);
+
 
     }
 
@@ -104,6 +103,19 @@ public class ConversationActivity extends AppCompatActivity {
         contactName.setText(name + " " + last);
     }
 
+    public void setupRecyclerView() {
+        conversationRv = findViewById(R.id.conversationRv);
+        conversationAdapter = new ConversationAdapter(ConversationActivity.this, messages);
+        LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        conversationRv.setLayoutManager(llm);
+        conversationRv.setAdapter(conversationAdapter);
+        conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
+            @Override
+            public void getPosition(int position) {
+                conversationRv.smoothScrollToPosition(position);
+            }
+        });
+    }
 
     private void addMessage() {
         sendMessage.setOnClickListener(view -> {
@@ -116,15 +128,16 @@ public class ConversationActivity extends AppCompatActivity {
             Toast.makeText(this, String.valueOf(random), Toast.LENGTH_SHORT).show();*/
             conListRtRef.getReference("messages").child(id).child(currentTimeWSec).setValue(message);
 
+            conversationAdapter.notifyDataSetChanged();
+            conversationRv.smoothScrollToPosition(messages.size() - 1);
+
             messageEt.setText("");
         });
 
     }
 
     private void setupMessage() {
-        conversationAdapter = new ConversationAdapter(ConversationActivity.this, messages);
 
-        conversationRv.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
         conListRtRef.getReference("messages").child(currentUserID).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -135,10 +148,17 @@ public class ConversationActivity extends AppCompatActivity {
                     if (id.equals(message.getFromUser())) {
                         conversationAdapter.setMessageType(0);
                         messages.add(message);
-                        conversationAdapter.notifyDataSetChanged();
-                        ;
 
                     }
+                    conversationAdapter.notifyDataSetChanged();
+                    conversationRv.smoothScrollToPosition(messages.size() - 1);
+
+                  /*  conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
+                        @Override
+                        public void getPosition(int position) {
+                            conversationRv.smoothScrollToPosition(position);
+                        }
+                    });*/
                 }
             }
 
@@ -151,9 +171,19 @@ public class ConversationActivity extends AppCompatActivity {
                         conversationAdapter.setMessageType(0);
                         messages.add(message);
 
-                        conversationAdapter.notifyDataSetChanged();
+
                     }
+                    conversationAdapter.notifyDataSetChanged();
+                    conversationRv.smoothScrollToPosition(messages.size() - 1);
+/*
+                    conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
+                        @Override
+                        public void getPosition(int position) {
+                            conversationRv.smoothScrollToPosition(position);
+                        }
+                    });*/
                 }
+
             }
 
             @Override
@@ -177,27 +207,54 @@ public class ConversationActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
+
                     Message message = dataSnapshot.getValue(Message.class);
                     if (currentUserID.equals(message.getFromUser())) {
                         conversationAdapter.setMessageType(1);
                         messages.add(message);
 //                        conListFsRef.document(id).collection("Messages").add(messages);
-                        conversationAdapter.notifyDataSetChanged();
+
                     }
+                    conversationAdapter.notifyDataSetChanged();
+                    conversationRv.smoothScrollToPosition(messages.size() - 1);
+                    /*conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
+                        @Override
+                        public void getPosition(int position) {
+                            conversationRv.smoothScrollToPosition(position);
+                        }
+                    });
+*/
+
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
+/*
+
+                    conversationAdapter.notifyDataSetChanged();
+*/
+
                     Message message = dataSnapshot.getValue(Message.class);
                     if (currentUserID.equals(message.getFromUser())) {
                         conversationAdapter.setMessageType(1);
                         messages.add(message);
 //                        conListFsRef.document(id).collection("Messages").add(messages);
-                        conversationAdapter.notifyDataSetChanged();
+
                     }
+                    conversationAdapter.notifyDataSetChanged();
+                    conversationRv.smoothScrollToPosition(messages.size() - 1);
+
+                   /* conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
+                        @Override
+                        public void getPosition(int position) {
+                            conversationRv.smoothScrollToPosition(position);
+                        }
+                    });*/
+
                 }
+
             }
 
             @Override
@@ -318,15 +375,9 @@ public class ConversationActivity extends AppCompatActivity {
         });
 
   */
-        conversationRv.setAdapter(conversationAdapter);
 
-        conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
-            @Override
-            public void getPosition(int position) {
-                conversationRv.smoothScrollToPosition(position);
-            }
-        });
-        addMessage();
+        conversationAdapter.notifyDataSetChanged();
+
 
     }
 
