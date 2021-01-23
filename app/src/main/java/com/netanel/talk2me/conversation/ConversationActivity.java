@@ -107,14 +107,15 @@ public class ConversationActivity extends AppCompatActivity {
         conversationRv = findViewById(R.id.conversationRv);
         conversationAdapter = new ConversationAdapter(ConversationActivity.this, messages);
         LinearLayoutManager llm = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        llm.setStackFromEnd(true);
         conversationRv.setLayoutManager(llm);
         conversationRv.setAdapter(conversationAdapter);
-        conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
+        /*conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
             @Override
             public void getPosition(int position) {
                 conversationRv.smoothScrollToPosition(position);
             }
-        });
+        });*/
     }
 
     private void addMessage() {

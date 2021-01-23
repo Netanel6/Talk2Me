@@ -65,7 +65,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         holder.txtTimestamp.setText(hour);
 
         holder.txtMessage.setText(chatMessages.getInput());
-        onSend.getPosition(position);
+//        onSend.getPosition(position);
 
     }
 
