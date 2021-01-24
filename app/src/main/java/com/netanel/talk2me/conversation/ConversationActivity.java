@@ -1,8 +1,10 @@
 package com.netanel.talk2me.conversation;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.Button;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,9 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -39,18 +43,14 @@ public class ConversationActivity extends AppCompatActivity {
     String currentTimeWSec;
     String currentUserID = FirebaseAuth.getInstance().getUid();
     String name, last, photo, phone, email, status, id;
+    String messageInput = "";
     EditText messageEt;
-    Button sendMessage;
+    FloatingActionButton sendMessage;
     RecyclerView conversationRv;
-
-
     FirebaseDatabase conListRtRef;
     ConversationAdapter conversationAdapter;
-
-
     CollectionReference usersRef;
     CollectionReference dataRef;
-
     ArrayList<Message> messages = new ArrayList<>();
 
     @Override
@@ -62,6 +62,7 @@ public class ConversationActivity extends AppCompatActivity {
         setupViews();
         setupRecyclerView();
         startConversation();
+        watchTextChanges();
         setupMessage();
         addMessage();
     }
@@ -69,15 +70,12 @@ public class ConversationActivity extends AppCompatActivity {
     private void setupTime() {
         currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
         currentTimeWSec = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-
     }
 
     private void setupRef() {
         usersRef = FirebaseFirestore.getInstance().collection("AllUsers");
         dataRef = FirebaseFirestore.getInstance().collection("Data");
         conListRtRef = FirebaseDatabase.getInstance();
-
-
     }
 
     private void setupViews() {
@@ -85,8 +83,6 @@ public class ConversationActivity extends AppCompatActivity {
         contactName = findViewById(R.id.title);
         messageEt = findViewById(R.id.input_et);
         sendMessage = findViewById(R.id.input_send);
-
-
     }
 
     private void startConversation() {
@@ -98,7 +94,6 @@ public class ConversationActivity extends AppCompatActivity {
         email = b.getString("email");
         status = b.getString("status");
         id = b.getString("id");
-
         Picasso.get().load(photo).transform(new CropCircleTransformation()).into(contactPhoto);
         contactName.setText(name + " " + last);
     }
@@ -110,97 +105,87 @@ public class ConversationActivity extends AppCompatActivity {
         llm.setStackFromEnd(true);
         conversationRv.setLayoutManager(llm);
         conversationRv.setAdapter(conversationAdapter);
-        /*conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
-            @Override
-            public void getPosition(int position) {
-                conversationRv.smoothScrollToPosition(position);
-            }
-        });*/
     }
 
-    private void addMessage() {
-        sendMessage.setOnClickListener(view -> {
-            String messageInput = messageEt.getText().toString().trim().toLowerCase();
-            setupTime();
-            Message message = new Message(messageInput, currentUserID, id, currentTime);
-            /*final int min = 20;
-            final int max = 80;
-            final int random = new Random().nextInt((max - min) + 1) + min;
-            Toast.makeText(this, String.valueOf(random), Toast.LENGTH_SHORT).show();*/
-            conListRtRef.getReference("messages").child(id).child(currentTimeWSec).setValue(message);
+    // TODO: 24/01/2021 add text listenet and change drawble by its own case! 
+    public void watchTextChanges() {
+        messageEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                
+            }
 
-            conversationAdapter.notifyDataSetChanged();
-            conversationRv.smoothScrollToPosition(messages.size() - 1);
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                
+            }
 
-            messageEt.setText("");
+            @Override
+            public void afterTextChanged(Editable editable) {
+                
+            }
         });
 
     }
 
-    private void setupMessage() {
+    private void addMessage() {
+        Drawable sendTextDrawable = ContextCompat.getDrawable(this, R.drawable.ic_send_24);
+        Drawable sendVoiceDrawable = ContextCompat.getDrawable(this, R.drawable.ic_outline_voice_24);
+/*
+            if (messageInput.isEmpty()){
+                sendMessage.setImageDrawable(sendVoiceDrawable);
+            }else if (messageInput.contains(" ")){
+                sendMessage.setImageDrawable(sendTextDrawable);
+            }*/
+        
+        sendMessage.setOnClickListener(view -> {
+            messageInput = messageEt.getText().toString().trim().toLowerCase();
+            setupTime();
+            Message message = new Message(messageInput, currentUserID, id, currentTime);
+            conListRtRef.getReference("messages").child(id).child(currentTimeWSec).setValue(message);
+            conversationAdapter.notifyDataSetChanged();
+            messageEt.setText("");
+        });
+    }
 
+    private void setupMessage() {
         conListRtRef.getReference("messages").child(currentUserID).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
-
-
                     Message message = dataSnapshot.getValue(Message.class);
                     if (id.equals(message.getFromUser())) {
                         conversationAdapter.setMessageType(0);
                         messages.add(message);
-
                     }
                     conversationAdapter.notifyDataSetChanged();
-                    conversationRv.smoothScrollToPosition(messages.size() - 1);
-
-                  /*  conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
-                        @Override
-                        public void getPosition(int position) {
-                            conversationRv.smoothScrollToPosition(position);
-                        }
-                    });*/
+                    conversationRv.smoothScrollToPosition(messages.size());
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
-
                     Message message = dataSnapshot.getValue(Message.class);
                     if (id.equals(message.getFromUser())) {
                         conversationAdapter.setMessageType(0);
                         messages.add(message);
-
-
                     }
                     conversationAdapter.notifyDataSetChanged();
-                    conversationRv.smoothScrollToPosition(messages.size() - 1);
-/*
-                    conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
-                        @Override
-                        public void getPosition(int position) {
-                            conversationRv.smoothScrollToPosition(position);
-                        }
-                    });*/
+                    conversationRv.smoothScrollToPosition(messages.size());
                 }
-
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
 
@@ -208,54 +193,27 @@ public class ConversationActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
-
                     Message message = dataSnapshot.getValue(Message.class);
                     if (currentUserID.equals(message.getFromUser())) {
                         conversationAdapter.setMessageType(1);
                         messages.add(message);
-//                        conListFsRef.document(id).collection("Messages").add(messages);
-
                     }
                     conversationAdapter.notifyDataSetChanged();
-                    conversationRv.smoothScrollToPosition(messages.size() - 1);
-                    /*conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
-                        @Override
-                        public void getPosition(int position) {
-                            conversationRv.smoothScrollToPosition(position);
-                        }
-                    });
-*/
-
+                    conversationRv.smoothScrollToPosition(messages.size());
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
-/*
-
-                    conversationAdapter.notifyDataSetChanged();
-*/
-
                     Message message = dataSnapshot.getValue(Message.class);
                     if (currentUserID.equals(message.getFromUser())) {
                         conversationAdapter.setMessageType(1);
                         messages.add(message);
-//                        conListFsRef.document(id).collection("Messages").add(messages);
-
                     }
                     conversationAdapter.notifyDataSetChanged();
-                    conversationRv.smoothScrollToPosition(messages.size() - 1);
-
-                   /* conversationAdapter.setOnSend(new ConversationAdapter.OnSend() {
-                        @Override
-                        public void getPosition(int position) {
-                            conversationRv.smoothScrollToPosition(position);
-                        }
-                    });*/
-
+                    conversationRv.smoothScrollToPosition(messages.size());
                 }
-
             }
 
             @Override
@@ -273,113 +231,7 @@ public class ConversationActivity extends AppCompatActivity {
 
             }
         });
-
-        /*usersRef.document(currentUserID).collection("Contacts").document(id).collection("Chat")
-                .orderBy("id", Query.Direction.ASCENDING).whereEqualTo("toUser", currentUserID).orderBy("timeStamp")
-                .get().addOnSuccessListener(queryDocumentSnapshots -> {
-
-            for (QueryDocumentSnapshot snapshot:queryDocumentSnapshots){
-                Message message = snapshot.toObject(Message.class);
-                if (id.equals(message.getFromUser())){
-                    conversationAdapter.setMessageType(0);
-                    messages.add(message);
-                    conversationRv.setAdapter(conversationAdapter);
-                    conversationAdapter.notifyDataSetChanged();
-                }
-            }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("error", e.getMessage());
-
-        });
-
-         usersRef.document(currentUserID).collection("Contacts").document(id).collection("Chat")
-                .orderBy("id", Query.Direction.ASCENDING).whereEqualTo("toUser", id).orderBy("timeStamp")
-                .get().addOnSuccessListener(queryDocumentSnapshots -> {
-             for (QueryDocumentSnapshot snapshot:queryDocumentSnapshots){
-                 Message message = snapshot.toObject(Message.class);
-                 if (currentUserID.equals(message.getFromUser())){
-                     conversationAdapter.setMessageType(1);
-                     messages.add(message);
-                     conversationRv.setAdapter(conversationAdapter);
-                     conversationAdapter.notifyDataSetChanged();
-                 }
-             }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-             Log.e("error", e.getMessage());
-        });*/
-
-        /*
-        usersRef.document(currentUserID).collection("Contacts").document(id).collection("Chat")
-                .orderBy("toUser").whereEqualTo("id", currentUserID)
-                .get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                for (QueryDocumentSnapshot snapshot: task.getResult()){
-                    Message message = snapshot.toObject(Message.class);
-                    if (id.equals(message.getFromUser())) {
-                        conversationAdapter.setMessageType(0);
-                        messages.add(message);
-                        conversationAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
-
-        usersRef.document(currentUserID).collection("Contacts").document(id).collection("Chat")
-                .orderBy("toUser").whereEqualTo("id", id)
-                .get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                for (QueryDocumentSnapshot snapshot: task.getResult()){
-                    Message message = snapshot.toObject(Message.class);
-                    if (currentUserID.equals(message.getFromUser())) {
-                        conversationAdapter.setMessageType(1);
-                        messages.add(message);
-                        conversationAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
-*/
-
-        /*       dataRef.document("ContactList").collection(currentUserID).document(id).collection("Messages").orderBy("toUser").whereEqualTo("id", currentUserID).get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot snapshot:queryDocumentSnapshots){
-                Message message = snapshot.toObject(Message.class);
-                if (id.equals(message.getFromUser())){
-                    conversationAdapter.setMessageType(1);
-                    messages.add(message);
-                    conversationAdapter.notifyDataSetChanged();
-                }
-            }
-
-        }).addOnFailureListener(e -> {
-
-        });
-
-        dataRef.document("ContactList").collection(currentUserID).document(id).collection("Messages").orderBy("toUser").whereEqualTo("id", id).get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot snapshot:queryDocumentSnapshots){
-                Message message = snapshot.toObject(Message.class);
-                if (currentUserID.equals(message.getFromUser())){
-                    conversationAdapter.setMessageType(0);
-                    messages.add(message);
-                    conversationAdapter.notifyDataSetChanged();
-
-                }
-            }
-
-        }).addOnFailureListener(e -> {
-
-        });
-
-  */
-
         conversationAdapter.notifyDataSetChanged();
-
-
     }
 
     @Override

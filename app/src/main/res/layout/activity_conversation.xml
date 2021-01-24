@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_chat_bg"
 
     tools:context=".conversation.ConversationActivity"
     android:orientation="vertical"
@@ -15,12 +14,14 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/conversationRv"
+        android:background="@drawable/main_chat_bg"
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
         tools:listitem="@layout/message_in_single_cell"
         android:layout_weight="1"/>
 
-    <include layout="@layout/input_conversation"
+    <include layout="@layout/input_conversation2"
       />
 
 
