@@ -240,6 +240,7 @@ public class ConversationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // TODO: 25/01/2021 add method that saves realtimeDataBase reference to FireStore.
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

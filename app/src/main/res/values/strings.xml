@@ -3,8 +3,7 @@
     <string name="tab_chats">Chats</string>
     <string name="tab_contacts">My Contacts</string>
     <string name="welcome_title">Congratulations you are signed up to Talk2Me</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+   
     <string name="send">Send</string>
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
     <string name="status">Hey there! I\'m on Talk2Me</string>
