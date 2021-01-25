@@ -5,9 +5,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,9 +45,10 @@ public class ConversationActivity extends AppCompatActivity {
     String currentTimeWSec;
     String currentUserID = FirebaseAuth.getInstance().getUid();
     String name, last, photo, phone, email, status, id;
-    String messageInput = "";
+    String messageInput;
     EditText messageEt;
-    FloatingActionButton sendMessage;
+    FloatingActionButton sendTextMessage;
+    FloatingActionButton sendVoiceMessage;
     RecyclerView conversationRv;
     FirebaseDatabase conListRtRef;
     ConversationAdapter conversationAdapter;
@@ -62,7 +65,6 @@ public class ConversationActivity extends AppCompatActivity {
         setupViews();
         setupRecyclerView();
         startConversation();
-        watchTextChanges();
         setupMessage();
         addMessage();
     }
@@ -82,7 +84,8 @@ public class ConversationActivity extends AppCompatActivity {
         contactPhoto = findViewById(R.id.main_image);
         contactName = findViewById(R.id.title);
         messageEt = findViewById(R.id.input_et);
-        sendMessage = findViewById(R.id.input_send);
+        sendTextMessage = findViewById(R.id.input_send_text);
+        sendVoiceMessage = findViewById(R.id.input_send_voice);
     }
 
     private void startConversation() {
@@ -95,7 +98,7 @@ public class ConversationActivity extends AppCompatActivity {
         status = b.getString("status");
         id = b.getString("id");
         Picasso.get().load(photo).transform(new CropCircleTransformation()).into(contactPhoto);
-        contactName.setText(name + " " + last);
+        contactName.setText(name + "  " + last);
     }
 
     public void setupRecyclerView() {
@@ -107,39 +110,40 @@ public class ConversationActivity extends AppCompatActivity {
         conversationRv.setAdapter(conversationAdapter);
     }
 
-    // TODO: 24/01/2021 add text listenet and change drawble by its own case! 
-    public void watchTextChanges() {
+    private void addMessage() {
+
         messageEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                
+
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                
+
+                if (editable.length() == 0) {
+
+                    sendVoiceMessage.setVisibility(View.VISIBLE);
+                    sendTextMessage.setVisibility(View.GONE);
+
+                } else {
+                    sendVoiceMessage.setVisibility(View.GONE);
+                    sendTextMessage.setVisibility(View.VISIBLE);
+                }
             }
         });
+         sendVoiceMessage.setOnLongClickListener(view -> {
+             Toast.makeText(this, "Voice Message", Toast.LENGTH_SHORT).show();
 
-    }
-
-    private void addMessage() {
-        Drawable sendTextDrawable = ContextCompat.getDrawable(this, R.drawable.ic_send_24);
-        Drawable sendVoiceDrawable = ContextCompat.getDrawable(this, R.drawable.ic_outline_voice_24);
-/*
-            if (messageInput.isEmpty()){
-                sendMessage.setImageDrawable(sendVoiceDrawable);
-            }else if (messageInput.contains(" ")){
-                sendMessage.setImageDrawable(sendTextDrawable);
-            }*/
-        
-        sendMessage.setOnClickListener(view -> {
-            messageInput = messageEt.getText().toString().trim().toLowerCase();
+             return false;
+         });
+        sendTextMessage.setOnClickListener(view -> {
+            messageInput = messageEt.getText().toString().trim();
             setupTime();
             Message message = new Message(messageInput, currentUserID, id, currentTime);
             conListRtRef.getReference("messages").child(id).child(currentTimeWSec).setValue(message);

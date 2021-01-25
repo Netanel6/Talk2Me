@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="65dp"
     android:elevation="12dp"
->
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:background="@drawable/input_bg"
+        android:orientation="horizontal"
         android:weightSum="2">
 
         <androidx.cardview.widget.CardView
@@ -18,59 +18,78 @@
             android:layout_height="match_parent"
             android:layout_weight="1.95"
             android:background="@color/white"
-            app:cardCornerRadius="25dp"
-            android:layout_margin="6dp"
             android:gravity="center"
+            android:layout_margin="6dp"
+            android:orientation="horizontal"
 
-            android:orientation="horizontal">
+            app:cardCornerRadius="25dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="3"
-                >
+
+                android:weightSum="3">
 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:layout_margin="6dp"
                     android:layout_weight="0.3"
-                     android:layout_margin="6dp"
                     android:src="@drawable/ic_outline_emoji_24" />
 
                 <EditText
                     android:id="@+id/input_et"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
                     android:layout_weight="2.4"
-                    android:inputType="textMultiLine|textShortMessage"
-                    android:hint="הקלד הודעה" />
+                    android:background="@null"
+                    android:hint="הקלד הודעה"
+                    android:inputType="textMultiLine|textShortMessage" />
 
 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_weight="0.3"
                     android:layout_gravity="center"
                     android:layout_margin="6dp"
+                    android:layout_weight="0.3"
                     android:src="@drawable/ic_outline_camera_24" />
 
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <Button
-            android:id="@+id/input_send"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="4dp"
-            android:textColor="@color/white"
-            android:drawableEnd="@drawable/ic_send_24"
-            android:text="@string/send"
-            android:textAllCaps="false" />
+            android:layout_height="wrap_content">
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/input_send_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/purple_app_name"
+                android:src="@drawable/ic_send_voice_24"
+                android:text="@string/send"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/input_send_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/purple_app_name"
+                android:src="@drawable/ic_send_text_24"
+                android:visibility="gone"
+                android:text="@string/send"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+
+        </RelativeLayout>
 
     </LinearLayout>
 

@@ -21,7 +21,7 @@
         tools:listitem="@layout/message_in_single_cell"
         android:layout_weight="1"/>
 
-    <include layout="@layout/input_conversation2"
+    <include layout="@layout/input_conversation"
       />
 
 
