@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="65dp"
-    android:elevation="12dp"
-    >
+    app:cardElevation="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,53 +16,55 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="6dp"
             android:layout_weight="1.95"
             android:background="@color/white"
             android:gravity="center"
-            android:layout_margin="6dp"
             android:orientation="horizontal"
-
-            app:cardCornerRadius="25dp">
+            app:cardCornerRadius="25dp"
+            app:cardElevation="15dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-
                 android:weightSum="3">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_margin="6dp"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0"
                     android:src="@drawable/ic_outline_emoji_24" />
 
+                <!-- android:background="@null"
+                     deletes the underline in edit text -->
                 <EditText
                     android:id="@+id/input_et"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="2.4"
+                    android:layout_weight="3"
                     android:background="@null"
-                    android:hint="הקלד הודעה"
+                    android:hint="@string/input_et"
                     android:inputType="textMultiLine|textShortMessage" />
 
-
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_margin="6dp"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0"
                     android:src="@drawable/ic_outline_camera_24" />
 
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -70,23 +72,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:backgroundTint="@color/purple_app_name"
+                android:backgroundTint="@color/purple_500"
+                android:elevation="0dp"
                 android:src="@drawable/ic_send_voice_24"
-                android:text="@string/send"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textAllCaps="false" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/input_send_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:backgroundTint="@color/purple_app_name"
+                android:backgroundTint="@color/purple_500"
+                android:elevation="0dp"
                 android:src="@drawable/ic_send_text_24"
-                android:visibility="gone"
-                android:text="@string/send"
                 android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
 
         </RelativeLayout>

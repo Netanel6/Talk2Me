@@ -3,13 +3,13 @@
     <string name="tab_chats">Chats</string>
     <string name="tab_contacts">My Contacts</string>
     <string name="welcome_title">Congratulations you are signed up to Talk2Me</string>
-   
-    <string name="send">Send</string>
+
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
     <string name="status">Hey there! I\'m on Talk2Me</string>
     <string name="name_amp_last"><![CDATA[Name & Last]]></string>
     <string name="email">Email</string>
     <string name="phone">Phone</string>
+    <string name="input_et">Type message</string>
 
 
 </resources>
